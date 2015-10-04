@@ -1,0 +1,36 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/bin/npm', 'run', 'dev' ]
+2 info using npm@2.13.5
+3 info using node@v0.10.40
+4 verbose node symlink /usr/bin/node
+5 verbose run-script [ 'predev', 'dev', 'postdev' ]
+6 info predev seeds@1.0.0
+7 info dev seeds@1.0.0
+8 verbose unsafe-perm in lifecycle true
+9 info seeds@1.0.0 Failed to exec dev script
+10 verbose stack Error: seeds@1.0.0 dev: `webpack-dev-server --devtool eval --progress --colors --content-base build`
+10 verbose stack Exit status 8
+10 verbose stack     at EventEmitter.<anonymous> (/usr/lib/node_modules/npm/lib/utils/lifecycle.js:214:16)
+10 verbose stack     at EventEmitter.emit (events.js:98:17)
+10 verbose stack     at ChildProcess.<anonymous> (/usr/lib/node_modules/npm/lib/utils/spawn.js:24:14)
+10 verbose stack     at ChildProcess.emit (events.js:98:17)
+10 verbose stack     at maybeClose (child_process.js:766:16)
+10 verbose stack     at Process.ChildProcess._handle.onexit (child_process.js:833:5)
+11 verbose pkgid seeds@1.0.0
+12 verbose cwd /home/niole/code/javascript/seeds
+13 error Linux 3.13.0-37-generic
+14 error argv "node" "/usr/bin/npm" "run" "dev"
+15 error node v0.10.40
+16 error npm  v2.13.5
+17 error code ELIFECYCLE
+18 error seeds@1.0.0 dev: `webpack-dev-server --devtool eval --progress --colors --content-base build`
+18 error Exit status 8
+19 error Failed at the seeds@1.0.0 dev script 'webpack-dev-server --devtool eval --progress --colors --content-base build'.
+19 error This is most likely a problem with the seeds package,
+19 error not with npm itself.
+19 error Tell the author that this fails on your system:
+19 error     webpack-dev-server --devtool eval --progress --colors --content-base build
+19 error You can get their info via:
+19 error     npm owner ls seeds
+19 error There is likely additional logging output above.
+20 verbose exit [ 1, true ]

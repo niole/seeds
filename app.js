@@ -1,8 +1,8 @@
+var node_mods = __dirname + '/node_modules';
 var webpack = require("webpack");
 var express = require('express');
 var app = express();
 
-//var home = app.use(express.static('static'));
 var home = app.use(express.static('static'));
 
 var compiler = webpack({
@@ -14,7 +14,14 @@ var compiler = webpack({
   devServer: {
     publicPath: "/static"
   },
+  resolve: {
+    alias: {
+      'react': node_mods + '/react/dist/react.min.js',
+      '$': node_mods + '/jquery/dist/jquery.min.js'
+    }
+  },
   module: {
+    noParse: [node_mods + '/react/dist/react.min.js', node_mods + '/jquery/dist/jquery.min.js'],
     loaders: [
       { test: /\.js$/, loader: 'jsx-loader' }
     ]
@@ -24,8 +31,6 @@ var compiler = webpack({
 compiler.run(function(err, stats) {
   if (err) {
     console.error(err);
-  } else {
-    console.log(stats);
   }
 });
 

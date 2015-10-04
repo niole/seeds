@@ -11,7 +11,6 @@ module.exports = (function() {
     this.width = width;
     this.data = [];
     this.down = 0;
-    this.incFunc = null;
   }
 
   Seeds.prototype = new Seeds();
@@ -40,18 +39,18 @@ module.exports = (function() {
     }, 500);
   };
 
-  Seeds.prototype.stopincseed = function() {
+  Seeds.prototype.stopincseed = function(rectCtx) {
     clearInterval(window.incFunc);
-    this.resetseed();
+    this.plantseed(rectCtx);
   };
 
   Seeds.prototype.resetseed = function() {
       this.down = 0;
   };
 
-  Seeds.prototype.plantseed = function() {
-    var x = this.xscale.invert(d3.mouse(this)[0]);
-    var y = this.yscale.invert(d3.mouse(this)[1]);
+  Seeds.prototype.plantseed = function(rectCtx) {
+    var x = this.xscale.invert(d3.mouse(rectCtx)[0]);
+    var y = this.yscale.invert(d3.mouse(rectCtx)[1]);
     this.data.push({"x":x,"y":y,"r": this.down});
     this.resetseed();
     this.drawsvg();
@@ -59,13 +58,19 @@ module.exports = (function() {
 
   Seeds.prototype.drawsvg = function() {
 
+    var seeds = this;
+
     this.svg.append("rect")
         .attr("width",this.width)
         .attr("height", this.height)
         .style("fill", "yellow")
         .style("pointer-events", "all")
-        .on("mousedown", function() { this.setincseed() }.bind(this))
-        .on("mouseup", function() { this.stopincseed() }.bind(this));
+        .on("mousedown", function() {
+           seeds.setincseed()
+        })
+        .on("mouseup", function() {
+          seeds.stopincseed.call(seeds, this)
+        });
 
     this.seeds = this.svg.selectAll("circle")
                                 .data(this.data);

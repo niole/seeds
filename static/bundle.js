@@ -9293,9 +9293,24 @@
 	module.exports = (function() {
 
 	  function Seeds(height, width) {
+	    var seeds = this;
+
 	    this.svg = d3.select('body').append('svg')
 	                .attr("width", width)
 	                .attr("height", height);
+	    this.rect =
+	    this.svg.append("rect")
+	        .attr("width", width)
+	        .attr("height", height)
+	        .style("fill", "yellow")
+	        .style("pointer-events", "all")
+	        .on("mousedown", function() {
+	           seeds.setincseed()
+	        })
+	        .on("mouseup", function() {
+	          seeds.stopincseed.call(seeds, this)
+	        });
+
 
 	    this.height = height;
 	    this.width = width;
@@ -9326,7 +9341,7 @@
 	    var self = this;
 	    window.incFunc = setInterval(function() {
 	      self.incseed();
-	    }, 500);
+	    }, 50);
 	  };
 
 	  Seeds.prototype.stopincseed = function(rectCtx) {
@@ -9348,19 +9363,7 @@
 
 	  Seeds.prototype.drawsvg = function() {
 
-	    var seeds = this;
 
-	    this.svg.append("rect")
-	        .attr("width",this.width)
-	        .attr("height", this.height)
-	        .style("fill", "yellow")
-	        .style("pointer-events", "all")
-	        .on("mousedown", function() {
-	           seeds.setincseed()
-	        })
-	        .on("mouseup", function() {
-	          seeds.stopincseed.call(seeds, this)
-	        });
 
 	    this.seeds = this.svg.selectAll("circle")
 	                                .data(this.data);

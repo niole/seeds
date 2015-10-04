@@ -9,6 +9,7 @@ var svg = require('./seeds');
     var Seeds = new svg.Seeds(height, width);
     Seeds.setxscale(50, width);
     Seeds.setyscale(50, height);
+    Seeds.drawsvg();
   }
 
 }());

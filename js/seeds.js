@@ -11,6 +11,7 @@ module.exports = (function() {
     this.width = width;
     this.data = [];
     this.down = 0;
+    this.incFunc = null;
   }
 
   Seeds.prototype = new Seeds();
@@ -28,8 +29,20 @@ module.exports = (function() {
             .range([height, 0]);
   };
 
-  Seeds.prototype.makeseed = function() {
-      this.down += 1;
+  Seeds.prototype.incseed = function() {
+    this.down += 1;
+  };
+
+  Seeds.prototype.setincseed = function() {
+    var self = this;
+    window.incFunc = setInterval(function() {
+      self.incseed();
+    }, 500);
+  };
+
+  Seeds.prototype.stopincseed = function() {
+    clearInterval(window.incFunc);
+    this.resetseed();
   };
 
   Seeds.prototype.resetseed = function() {
@@ -49,10 +62,10 @@ module.exports = (function() {
     this.svg.append("rect")
         .attr("width",this.width)
         .attr("height", this.height)
-        .style("fill", "none")
+        .style("fill", "yellow")
         .style("pointer-events", "all")
-        .on("mouseup", function() { plantseed })
-        .on("mousedown", function() { makeseed });
+        .on("mousedown", function() { this.setincseed() }.bind(this))
+        .on("mouseup", function() { this.stopincseed() }.bind(this));
 
     this.seeds = this.svg.selectAll("circle")
                                 .data(this.data);
@@ -72,6 +85,7 @@ module.exports = (function() {
       .exit()
       .remove();
   };
+
   return {
     Seeds: Seeds
   }

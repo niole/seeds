@@ -1,15 +1,14 @@
-"use strict";
 var $ = require('jquery');
-var React = require('react');
+var svg = require('./seeds');
 
-var Test = React.createClass({
-  render: function () {
-    return (
-      <h1>test</h1>
-    );
+(function() {
+
+  drawsvg(700, 700);
+
+  function drawsvg(height, width) {
+    var Seeds = new svg.Seeds(height, width);
+    Seeds.setxscale(50, width);
+    Seeds.setyscale(50, height);
   }
-});
 
-$(document).ready(function() {
-  React.render(<Test/>, document.body);
-});
+}());

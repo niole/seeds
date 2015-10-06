@@ -16,9 +16,6 @@ module.exports = (function() {
         .style("pointer-events", "all")
         .on("mousedown", function() {
            seeds.setincseed.call(seeds, this);
-        })
-        .on("mouseup", function() {
-          seeds.stopincseed.call(seeds, this);
         });
 
     this.height = height;
@@ -46,12 +43,12 @@ module.exports = (function() {
 
   Seeds.prototype.incseed = function() {
     var self = this;
+    console.log(this.inProg);
     if (this.inProg) {
       this.down += 1;
       this.data[this.data.length-1].r = this.down;
-      console.log(this.data[this.data.length-1]);
       this.drawsvg();
-      setTimeout(self.incseed.bind(self), 50);
+      window.incFunc = setTimeout(self.incseed.bind(self), 50);
     }
   };
 
@@ -68,7 +65,8 @@ module.exports = (function() {
     }
   };
 
-  Seeds.prototype.stopincseed = function(rectCtx) {
+  Seeds.prototype.stopincseed = function() {
+    clearTimeout(window.incFunc);
     this.inProg = false;
     this.resetseed();
   };
@@ -99,7 +97,11 @@ module.exports = (function() {
     this.seeds
       .attr("cx", function(d) { return this.xscale(d.x);}.bind(this))
       .attr("cy", function(d) { return this.yscale(d.y); }.bind(this))
-      .attr("r", function(d) { return d.r; });
+      .attr("r", function(d) { return d.r; })
+      .on("mouseup", function() {
+        this.stopincseed();
+      }.bind(this));
+
 
     this.seeds
       .exit()

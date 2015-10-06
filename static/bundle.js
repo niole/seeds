@@ -9306,9 +9306,6 @@
 	        .style("pointer-events", "all")
 	        .on("mousedown", function() {
 	           seeds.setincseed.call(seeds, this);
-	        })
-	        .on("mouseup", function() {
-	          seeds.stopincseed.call(seeds, this);
 	        });
 
 	    this.height = height;
@@ -9335,19 +9332,17 @@
 	  };
 
 	  Seeds.prototype.incseed = function() {
-	    console.log('incseed');
 	    var self = this;
+	    console.log(this.inProg);
 	    if (this.inProg) {
 	      this.down += 1;
 	      this.data[this.data.length-1].r = this.down;
-	      console.log(this.data[this.data.length-1]);
 	      this.drawsvg();
-	      setTimeout(self.incseed.bind(self), 50);
+	      window.incFunc = setTimeout(self.incseed.bind(self), 50);
 	    }
 	  };
 
 	  Seeds.prototype.setincseed = function(rectCtx) {
-	    //var self = this;
 	    var x = this.xscale.invert(d3.mouse(rectCtx)[0]);
 	    var y = this.yscale.invert(d3.mouse(rectCtx)[1]);
 
@@ -9358,18 +9353,11 @@
 	      this.drawsvg();
 	      this.incseed();
 	    }
-	  //  window.incFunc = setInterval(function() {
-	  //    if (!self.inProg) {
-	  //      self.plantseed(rectCtx);
-	  //    } else {
-	  //      self.incseed();
-	  //    }
-	  //  }, 50);
 	  };
 
-	  Seeds.prototype.stopincseed = function(rectCtx) {
+	  Seeds.prototype.stopincseed = function() {
+	    clearTimeout(window.incFunc);
 	    this.inProg = false;
-	    clearInterval(window.incFunc);
 	    this.resetseed();
 	  };
 
@@ -9381,7 +9369,6 @@
 	    var x = this.xscale.invert(d3.mouse(rectCtx)[0]);
 	    var y = this.yscale.invert(d3.mouse(rectCtx)[1]);
 	    this.data.push({i: this.data.length, "x":x,"y":y,"r": this.down});
-	    console.log(this.data);
 	    this.drawsvg();
 	    this.inProg = true;
 	  }
@@ -9400,7 +9387,11 @@
 	    this.seeds
 	      .attr("cx", function(d) { return this.xscale(d.x);}.bind(this))
 	      .attr("cy", function(d) { return this.yscale(d.y); }.bind(this))
-	      .attr("r", function(d) { return d.r; });
+	      .attr("r", function(d) { return d.r; })
+	      .on("mouseup", function() {
+	        this.stopincseed();
+	      }.bind(this));
+
 
 	    this.seeds
 	      .exit()

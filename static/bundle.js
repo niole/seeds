@@ -9349,7 +9349,6 @@
 	    if (!this.inProg) {
 	      this.inProg = true;
 	      this.plantseed(rectCtx);
-	      this.data.push({i: this.data.length, "x":x,"y":y,"r": this.down});
 	      this.drawsvg();
 	      this.incseed();
 	    }

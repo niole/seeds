@@ -15,23 +15,24 @@ module.exports = (function() {
         .style("fill", "yellow")
         .style("pointer-events", "all")
         .on("mousedown", function() {
-           seeds.setincseed()
+           seeds.setincseed.call(seeds, this);
         })
         .on("mouseup", function() {
-          seeds.stopincseed.call(seeds, this)
+          seeds.stopincseed.call(seeds, this);
         });
-
 
     this.height = height;
     this.width = width;
     this.data = [];
     this.down = 0;
+    this.inProg = false;
   }
 
   Seeds.prototype = new Seeds();
 
   Seeds.prototype.setxscale = function(npts, width) {
-      this.xscale = d3.scale.linear()
+      this.xscale =
+        d3.scale.linear()
           .domain([0, npts])
           .range([0, width]);
   };
@@ -39,24 +40,37 @@ module.exports = (function() {
   Seeds.prototype.setyscale = function(max, height) {
     this.yscale =
       d3.scale.linear()
-            .domain([max, 0])
-            .range([height, 0]);
+        .domain([max, 0])
+        .range([height, 0]);
   };
 
   Seeds.prototype.incseed = function() {
-    this.down += 1;
+    var self = this;
+    if (this.inProg) {
+      this.down += 1;
+      this.data[this.data.length-1].r = this.down;
+      console.log(this.data[this.data.length-1]);
+      this.drawsvg();
+      setTimeout(self.incseed.bind(self), 50);
+    }
   };
 
-  Seeds.prototype.setincseed = function() {
-    var self = this;
-    window.incFunc = setInterval(function() {
-      self.incseed();
-    }, 50);
+  Seeds.prototype.setincseed = function(rectCtx) {
+    var x = this.xscale.invert(d3.mouse(rectCtx)[0]);
+    var y = this.yscale.invert(d3.mouse(rectCtx)[1]);
+
+    if (!this.inProg) {
+      this.inProg = true;
+      this.plantseed(rectCtx);
+      this.data.push({i: this.data.length, "x":x,"y":y,"r": this.down});
+      this.drawsvg();
+      this.incseed();
+    }
   };
 
   Seeds.prototype.stopincseed = function(rectCtx) {
-    clearInterval(window.incFunc);
-    this.plantseed(rectCtx);
+    this.inProg = false;
+    this.resetseed();
   };
 
   Seeds.prototype.resetseed = function() {
@@ -66,17 +80,15 @@ module.exports = (function() {
   Seeds.prototype.plantseed = function(rectCtx) {
     var x = this.xscale.invert(d3.mouse(rectCtx)[0]);
     var y = this.yscale.invert(d3.mouse(rectCtx)[1]);
-    this.data.push({"x":x,"y":y,"r": this.down});
-    this.resetseed();
+    this.data.push({i: this.data.length, "x":x,"y":y,"r": this.down});
     this.drawsvg();
+    this.inProg = true;
   }
 
   Seeds.prototype.drawsvg = function() {
 
-
-
     this.seeds = this.svg.selectAll("circle")
-                                .data(this.data);
+                             .data(this.data);
     this.seeds
       .enter()
       .append("circle");

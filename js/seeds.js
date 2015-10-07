@@ -1,4 +1,6 @@
+var $ = require('jquery');
 var d3 = require('d3');
+var Rx = require('rx');
 
 module.exports = (function() {
 
@@ -10,6 +12,7 @@ module.exports = (function() {
                 .attr("height", height);
     this.rect =
     this.svg.append("rect")
+        .classed({"yellowrect": true})
         .attr("width", width)
         .attr("height", height)
         .style("fill", "yellow")
@@ -18,11 +21,18 @@ module.exports = (function() {
            seeds.setincseed.call(seeds, this);
         });
 
+    this.mouseMove = Rx.Observable.fromEvent($(".yellowrect"), 'mousemove');
+    this.mouseMove.subscribe(function(x)  {
+      console.log(x);
+      return x;
+    });
+
     this.height = height;
     this.width = width;
     this.data = [];
     this.down = 0;
     this.inProg = false;
+    this.timeout = 50;
   }
 
   Seeds.prototype = new Seeds();
@@ -43,7 +53,6 @@ module.exports = (function() {
 
   Seeds.prototype.incseed = function() {
     var self = this;
-    console.log(this.inProg);
     if (this.inProg) {
       this.down += 1;
       this.data[this.data.length-1].r = this.down;
@@ -84,6 +93,8 @@ module.exports = (function() {
 
   Seeds.prototype.drawsvg = function() {
 
+    var seeds = this;
+
     this.seeds = this.svg.selectAll("circle")
                              .data(this.data);
     this.seeds
@@ -98,9 +109,8 @@ module.exports = (function() {
       .attr("cy", function(d) { return this.yscale(d.y); }.bind(this))
       .attr("r", function(d) { return d.r; })
       .on("mouseup", function() {
-        this.stopincseed();
-      }.bind(this));
-
+        seeds.stopincseed();
+      });
 
     this.seeds
       .exit()

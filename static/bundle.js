@@ -9311,9 +9311,16 @@
 	           seeds.setincseed.call(seeds, this);
 	        });
 
-	    this.mouseMove = Rx.Observable.fromEvent($(".yellowrect"), 'mousemove');
-	    this.mouseMove.subscribe(function(x)  {
-	      console.log(x);
+	    this.mouseMoves = Rx.Observable.fromEvent($(".yellowrect"), 'mousemove');
+	    this.mouseUp = Rx.Observable.fromEvent($(".yellowrect"), 'mouseup');
+	    this.mouseDown = Rx.Observable.fromEvent($(".yellowrect"), 'mousedown');
+
+	    this.mouseDrag = this.mouseDown.selectMany(function(pt) {
+	      return seeds.mouseMoves.takeUntil(seeds.mouseUp);
+	    });
+
+	    this.mouseDrag.subscribe(function(x)  {
+	      console.log('mousemove');
 	      return x;
 	    });
 
@@ -9322,10 +9329,14 @@
 	    this.data = [];
 	    this.down = 0;
 	    this.inProg = false;
-	    this.timeout = 50;
+	    this.moveEvents = 0;
 	  }
 
 	  Seeds.prototype = new Seeds();
+
+	  Seeds.prototype.ispaused = function() {
+	    console.log('still');
+	  };
 
 	  Seeds.prototype.setxscale = function(npts, width) {
 	      this.xscale =

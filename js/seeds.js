@@ -30,8 +30,7 @@ module.exports = (function() {
     });
 
     this.mouseDrag.subscribe(function(x)  {
-      console.log(x.clientX);
-      console.log(x.clientY);
+      seeds.incseed(true, x.pageX, x.pageY);
       return x;
     });
 
@@ -40,10 +39,9 @@ module.exports = (function() {
     this.data = [];
     this.down = 0;
     this.inProg = false;
-    this.moveEvents = 0;
   }
 
-  Seeds.prototype = new Seeds();
+  //Seeds.prototype = new Seeds();
 
   Seeds.prototype.setxscale = function(npts, width) {
       this.xscale =
@@ -59,13 +57,18 @@ module.exports = (function() {
         .range([height, 0]);
   };
 
-  Seeds.prototype.incseed = function() {
+  Seeds.prototype.incseed = function(move, x, y) {
     var self = this;
     if (this.inProg) {
       this.down += 1;
-      this.data[this.data.length-1].r = this.down;
+      if (move) {
+        //push new svg
+        this.plantseed(this.xscale.invert(x),this.yscale.invert(y));
+      } else {
+        this.data[this.data.length-1].r = this.down;
+      }
       this.drawsvg();
-      this.starttimer(self.incseed.bind(self));
+      this.restarttimer();
     }
   };
 
@@ -75,9 +78,8 @@ module.exports = (function() {
 
     if (!this.inProg) {
       this.inProg = true;
-      this.plantseed(rectCtx);
-      this.drawsvg();
-      this.incseed();
+      this.plantseed( x, y);
+      this.incseed(false, null, null);
     }
   };
 
@@ -91,20 +93,20 @@ module.exports = (function() {
     clearTimeout(window.incFunc);
   };
 
-  Seeds.prototype.starttimer = function(F) {
-    window.incFunc = setTimeout(F, 50);
+  Seeds.prototype.restarttimer = function() {
+    var self = this;
+    window.incFunc = setTimeout(self.incseed.bind(self, false, null, null), 50);
   };
 
   Seeds.prototype.resetseed = function() {
       this.down = 0;
   };
 
-  Seeds.prototype.plantseed = function(rectCtx) {
-    var x = this.xscale.invert(d3.mouse(rectCtx)[0]);
-    var y = this.yscale.invert(d3.mouse(rectCtx)[1]);
+  Seeds.prototype.plantseed = function(x,y) {
+    console.log(x);
+    console.log(y);
     this.data.push({i: this.data.length, "x":x,"y":y,"r": this.down});
     this.drawsvg();
-    this.inProg = true;
   }
 
   Seeds.prototype.drawsvg = function() {

@@ -9355,7 +9355,7 @@
 	      this.down += 1;
 	      this.data[this.data.length-1].r = this.down;
 	      this.drawsvg();
-	      window.incFunc = setTimeout(self.incseed.bind(self), 50);
+	      this.starttimer(self.incseed.bind(self));
 	    }
 	  };
 
@@ -9372,9 +9372,18 @@
 	  };
 
 	  Seeds.prototype.stopincseed = function() {
-	    clearTimeout(window.incFunc);
+	//    clearTimeout(window.incFunc);
+	    this.stoptimer();
 	    this.inProg = false;
 	    this.resetseed();
+	  };
+
+	  Seeds.prototype.stoptimer = function() {
+	    clearTimeout(window.incFunc);
+	  };
+
+	  Seeds.prototype.starttimer = function(F) {
+	    window.incFunc = setTimeout(F, 50);
 	  };
 
 	  Seeds.prototype.resetseed = function() {

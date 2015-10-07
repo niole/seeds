@@ -2,8 +2,10 @@ var $ = require('jquery');
 var svg = require('./seeds');
 
 (function() {
+  var width = $(window).width();
+  var height = $(window).height();
 
-  drawsvg(700, 700);
+  drawsvg(height, width);
 
   function drawsvg(height, width) {
     var Seeds = new svg.Seeds(height, width);

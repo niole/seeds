@@ -29,10 +29,12 @@ module.exports = (function() {
       return seeds.mouseMoves.takeUntil(seeds.mouseUp);
     });
 
-    this.mouseDrag.subscribe(function(x)  {
-      seeds.incseed(true, x.pageX, x.pageY);
-      return x;
-    });
+  this.mouseDrag
+      .subscribe(function(x) {
+        console.log(x);
+        seeds.incseed(true, x.pageX, x.pageY);
+      });
+
 
     this.height = height;
     this.width = width;
@@ -40,8 +42,6 @@ module.exports = (function() {
     this.down = 0;
     this.inProg = false;
   }
-
-  //Seeds.prototype = new Seeds();
 
   Seeds.prototype.setxscale = function(npts, width) {
       this.xscale =
@@ -58,11 +58,9 @@ module.exports = (function() {
   };
 
   Seeds.prototype.incseed = function(move, x, y) {
-    var self = this;
     if (this.inProg) {
       this.down += 1;
       if (move) {
-        //push new svg
         this.plantseed(this.xscale.invert(x),this.yscale.invert(y));
       } else {
         this.data[this.data.length-1].r = this.down;
@@ -103,8 +101,6 @@ module.exports = (function() {
   };
 
   Seeds.prototype.plantseed = function(x,y) {
-    console.log(x);
-    console.log(y);
     this.data.push({i: this.data.length, "x":x,"y":y,"r": this.down});
     this.drawsvg();
   }
@@ -123,8 +119,8 @@ module.exports = (function() {
       .select("circle");
 
     this.seeds
-      .attr("cx", function(d) { return this.xscale(d.x);}.bind(this))
-      .attr("cy", function(d) { return this.yscale(d.y); }.bind(this))
+      .attr("cx", function(d) { return seeds.xscale(d.x); })
+      .attr("cy", function(d) { return seeds.yscale(d.y); })
       .attr("r", function(d) { return d.r; })
       .on("mouseup", function() {
         seeds.stopincseed();

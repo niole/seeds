@@ -9320,7 +9320,8 @@
 	    });
 
 	    this.mouseDrag.subscribe(function(x)  {
-	      console.log('mousemove');
+	      console.log(x.clientX);
+	      console.log(x.clientY);
 	      return x;
 	    });
 
@@ -9333,10 +9334,6 @@
 	  }
 
 	  Seeds.prototype = new Seeds();
-
-	  Seeds.prototype.ispaused = function() {
-	    console.log('still');
-	  };
 
 	  Seeds.prototype.setxscale = function(npts, width) {
 	      this.xscale =

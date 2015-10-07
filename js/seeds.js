@@ -30,7 +30,8 @@ module.exports = (function() {
     });
 
     this.mouseDrag.subscribe(function(x)  {
-      console.log('mousemove');
+      console.log(x.clientX);
+      console.log(x.clientY);
       return x;
     });
 
